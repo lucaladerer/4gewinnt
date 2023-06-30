@@ -9,17 +9,11 @@ public:
         , m_spieler2(0)
         , m_symbol1("")
         , m_symbol2("")
-        {};
-
-    Menu(int spieler1, int spieler2, std::string symbol1, std::string symbol2)
-        : m_spieler1(spieler1)
-        , m_spieler2(spieler2)
-        , m_symbol1(symbol1)
-        , m_symbol2(symbol2)
         {
         };
     
     virtual ~Menu(){};
+
 
     void startGame()
     {
@@ -29,18 +23,28 @@ public:
         std::cout << "(3) -> Hoizontaler Bot\n(4) -> Zufallsbot\n(5) -> Schlauer Bot\n" << std::endl;
 
         //Player1
-        std::cout << "Bitte wählen Sie nun Spieler 1 und dessen Symbol aus:\nSpielmodus:";  //evtl. Fehler
+        std::cout << "Bitte wählen Sie nun Spieler 1 und dessen Symbol aus:\nSpielmodus:\t\t";  
         std::cin >> m_spieler1;
-        std::cout << "Spielstein/Symbol:" << std::endl;
+        std::cout << "Spielstein/Symbol:\t";
         std::cin >> m_symbol1 ;
         std::cout << std::endl;
 
         //Player2
-        std::cout << "Bitte wählen Sie nun Spieler 2 und dessen Symbol aus:\nSpielmodus:";
+        std::cout << "Bitte wählen Sie nun Spieler 2 und dessen Symbol aus:\nSpielmodus:\t\t";
         std::cin >> m_spieler2;
-        std::cout << "Spielstein/Symbol:" << std::endl;
+        std::cout << "Spielstein/Symbol:\t";
         std::cin >> m_symbol2;
         std::cout << std::endl;
+    }
+
+    int getPlayer1() const
+    {
+        return m_spieler1;
+    }
+
+    int getPlayer2() const
+    {
+        return m_spieler2;
     }
 
     //get Symbol1 from class Menu -> Gamemode -> vererbung an Feld
@@ -49,11 +53,18 @@ public:
         return m_symbol1;
     }
 
+    std::string getSymbol2() const
+    {
+        return m_symbol2;
+    }
+
+
 protected:
     int m_spieler1;
     int m_spieler2;
     std::string m_symbol1;
     std::string m_symbol2;
+//    int static m_counter;     //wenn ungerade dann Spieler 1, wenn gerade dann Spieler 2
 };
 
 /*_____________________________________________________________________________________________________*/
@@ -64,12 +75,19 @@ class Feld : public Menu
 public:
     Feld(Menu menu)     //WICHTIG: Hier wird das Objekt der Klasse Menu an Feld übergeben! Erst dann kann man mit Feld auf Menu zugreifen
     : m_menu(menu)
-    // : m_feldbreite()
+    // : m_feldbreite()     //Variable Feldgröße
     // , m_feldhoehe()
     {
         createField();  //da das Feld sowieso erstellt werden muss, kann das direkt im Konstruktor erledigt werden
+        printField();
     };
+    
 
+    int alternatingPlayer()
+    {
+        m_counter++;
+        return m_counter;
+    }
 
     //create a Matrix (here 6x6) out of zeros
     void createField()
@@ -78,7 +96,7 @@ public:
         {
             for (int w = 0; w < 6; w++)
             {
-                array[z][w] = "0";
+                array[z][w] = "\u25A1";  //mit "\u25A1" kann man auch Vierecke machen
             }
         }
     }
@@ -94,35 +112,64 @@ public:
             }
             std::cout << std::endl;
         }
+        std::cout << "\n" << std::endl;
     }
     
 
     //set Symbol1 at chosen column
-    void setSymbol1(int y)
-    {                       
-        y--;
-        for(int i = 5; i>=0; i--)
+    void setSymbol1()       //-> Eventuell auch direkt nächsten Spieler als Konsequenz spielen lassen
+    {           
+        m_alteredNumber = alternatingPlayer();
+        //if Mensch dann abfragen
+        if(m_alteredNumber % 2 == 0)  //Spieler 2
         {
-            if(array[i][y] == "0")
+            if(m_menu.getPlayer1() == 1)    //Wenn Mensch
             {
-                array[i][y] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
-                break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
+                std::cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
+                std::cin >> m_column; 
+                m_differPlayer = 0;         //boolean für Fallunterscheidung bei Spielstein
             }
-        }
+        }      
+        else if(m_alteredNumber % 2 != 0)    //Spieler 1
+        {
+            if(m_menu.getPlayer2() == 1)    //Wenn Mensch
+            {
+                std::cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
+                std::cin >> m_column; 
+                m_differPlayer = 1;         //boolean für Fallunterscheidung bei Spielstein
+            }
+        }          
+            m_column--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
+            for(int i = 5; i>=0; i--)
+            {
+                if(array[i][m_column] == "\u25A1")   //mit "\u25A1" kann man auch Vierecke machen
+                {
+                    if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
+                    {
+                        array[i][m_column] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
+                    }
+                    else                    //Fallunterscheidung Spieler 2
+                    {
+                        array[i][m_column] = m_menu.getSymbol2(); 
+                    }
+                    break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
+                }
+            }
     }
 
-    //set Symbol2 at chosen column
-    void setSymbol2(std::string symbol2, int y)         //muss noch angepasst werden
+    //set Symbol2 at chosen column      EHER Unnötig!
+    void setSymbol2(int y)         
     {                       
         y--;
         for(int i = 5; i>=0; i--)
         {
             if(array[i][y] == "0")
             {
-                array[i][y] = symbol2;
+                array[i][y] = m_menu.getSymbol2();
                 break;
             }
         }
+        alternatingPlayer();
     }
 
     virtual ~Feld(){};
@@ -132,7 +179,13 @@ private:
     int m_feldhoehe;
     Menu m_menu;                                        //Objekt von Menu muss hier bereitgestellt werden
     std::string array[6][6];                            //wird später mit dem wirklichen Objekt initialisiert (m_menu ist hier Platzhalter)
+    int m_column;
+    int static m_counter;
+    int m_alteredNumber;                                //wechselt zwischen gerade und ungerade -> Spieler 1 und Spieler 2
+    bool m_differPlayer;                                //für Fallunterscheidung nach Spielstein
 };
+
+int Feld::m_counter = 0; //Wichtig für Initialisierung von static Memebervariable
 
 int main()
 {
@@ -140,8 +193,14 @@ int main()
     spiel.startGame();
 
     Feld feld(spiel);                                   //default constructor mit Objekt von Menu
-    feld.createField();
-    feld.setSymbol1(4);
-    feld.printField();
+    // feld.setSymbol1();
+    // feld.printField();
+    // feld.setSymbol1();
+    // feld.printField();
+    for(int v = 0; v<=6; v++)           //Gewinnbedingungen -> Schleife beendet wenn 4 in einer Reihe
+    {
+        feld.setSymbol1();
+        feld.printField();
+    }
     return 0;
 }
