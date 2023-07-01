@@ -1,5 +1,10 @@
 #include <iostream>
 #include <string>
+using std::cout;
+using std::cin;
+using std::endl;
+using std::string;
+
 
 class Menu
 {
@@ -9,6 +14,9 @@ public:
         , m_spieler2(0)
         , m_symbol1("")
         , m_symbol2("")
+        , m_feldformat("")
+        , m_feldbreite(0)
+        , m_feldhoehe(0)
         {
         };
     
@@ -18,23 +26,42 @@ public:
     void startGame()
     {
         //Introtext
-        std::cout << "Willkommen bei Vier Gewinnt!.\nFolgende Spielmodi stehen zur Auswahl:" << std::endl;
-        std::cout << "(1) -> Mensch\n(2) -> Vertikaler Bot" << std::endl;
-        std::cout << "(3) -> Hoizontaler Bot\n(4) -> Zufallsbot\n(5) -> Schlauer Bot\n" << std::endl;
+        cout << "Willkommen bei Vier Gewinnt!.\nFolgende Spielmodi stehen zur Auswahl:" << endl;
+        cout << "(1) -> Mensch\n(2) -> Vertikaler Bot" << endl;
+        cout << "(3) -> Hoizontaler Bot\n(4) -> Zufallsbot\n(5) -> Schlauer Bot\n" << endl;
 
         //Player1
-        std::cout << "Bitte wählen Sie nun Spieler 1 und dessen Symbol aus:\nSpielmodus:\t\t";  
-        std::cin >> m_spieler1;
-        std::cout << "Spielstein/Symbol:\t";
-        std::cin >> m_symbol1 ;
-        std::cout << std::endl;
+        cout << "Bitte wählen Sie nun Spieler 1 und dessen Symbol aus:\nSpielmodus:\t\t";  
+        cin >> m_spieler1;
+        cout << "Spielstein/Symbol:\t";
+        cin >> m_symbol1 ;
+        cout << endl;
 
         //Player2
-        std::cout << "Bitte wählen Sie nun Spieler 2 und dessen Symbol aus:\nSpielmodus:\t\t";
-        std::cin >> m_spieler2;
-        std::cout << "Spielstein/Symbol:\t";
-        std::cin >> m_symbol2;
-        std::cout << std::endl;
+        cout << "Bitte wählen Sie nun Spieler 2 und dessen Symbol aus:\nSpielmodus:\t\t";
+        cin >> m_spieler2;
+        cout << "Spielstein/Symbol:\t";
+        cin >> m_symbol2;
+        cout << endl;
+
+        cout << "Moechten Sie das Spiel auf der Standard-Feldgroesse (6x7) spielen? Falls ja, drücken Sie 'j', falls nein, drücken Sie 'n':\t";
+        cin >> m_feldformat;
+        cout << endl;
+        if(m_feldformat == "j" || m_feldformat == "J")
+        {
+        	standard = true;
+            cout << "Sie haben sich für die Standard-Feldgroesse entschieden!" << endl;
+        }
+        else if(m_feldformat == "n" || m_feldformat == "N")
+        {
+            standard = false;
+            cout << "Welche Breite soll das Spielfeld besitzen? (Mindestens 4):\t";
+            cin >> m_feldbreite;
+            cout << endl;
+            cout << "Welche Hoehe soll das Spielfeld besitzen? (Mindestens 4):\t";
+            cin >> m_feldhoehe;
+            cout << endl;
+        }
     }
 
     int getPlayer1() const
@@ -48,23 +75,40 @@ public:
     }
 
     //get Symbol1 from class Menu -> Gamemode -> vererbung an Feld
-    std::string getSymbol1() const
+    string getSymbol1() const
     {
         return m_symbol1;
     }
 
-    std::string getSymbol2() const
+    string getSymbol2() const
     {
         return m_symbol2;
     }
 
+    int getFeldbreite() const
+    {
+        return m_feldbreite;
+    }
+
+    int getFeldhoehe() const
+    {
+        return m_feldhoehe;
+    }
+
+    bool getStandard()
+    {
+        return standard;
+    }
 
 protected:
     int m_spieler1;
     int m_spieler2;
-    std::string m_symbol1;
-    std::string m_symbol2;
-//    int static m_counter;     //wenn ungerade dann Spieler 1, wenn gerade dann Spieler 2
+    string m_symbol1;
+    string m_symbol2;
+    string m_feldformat;
+    bool standard;
+    int m_feldbreite;
+    int m_feldhoehe;
 };
 
 /*_____________________________________________________________________________________________________*/
@@ -75,8 +119,7 @@ class Feld : public Menu
 public:
     Feld(Menu menu)     //WICHTIG: Hier wird das Objekt der Klasse Menu an Feld übergeben! Erst dann kann man mit Feld auf Menu zugreifen
     : m_menu(menu)
-    // : m_feldbreite()     //Variable Feldgröße
-    // , m_feldhoehe()
+
     {
         createField();  //da das Feld sowieso erstellt werden muss, kann das direkt im Konstruktor erledigt werden
         printField();
@@ -90,13 +133,26 @@ public:
     }
 
     //create a Matrix (here 6x6) out of zeros
-    void createField()
+    void createField()              //[x][y] -> x = Breite (Anzahl Spalten) | y = Höhe (Anzahl Reihen)
     {
-        for (int z = 0; z < 6; z++)
+        if(m_menu.getStandard() == true)
         {
-            for (int w = 0; w < 6; w++)
+            colsFix = 7;    //warum funktioniert das nicht?
+            rowsFix = 6;
+            // array[colsFix][rowsFix];    //Feldgröße soll tatsächliche Größe betragen
+        }
+        else if (m_menu.getStandard() == false)
+        {
+            colsFix = m_menu.getFeldbreite();
+            rowsFix = m_menu.getFeldhoehe();
+            // array[colsFix][rowsFix];    //Feldgröße soll tatsächliche Größe betragen
+        }
+
+        for (int cols = 0; cols < colsFix; cols++)
+        {
+            for (int rows = 0; rows < rowsFix; rows++)
             {
-                array[z][w] = "\u25A1";  //mit "\u25A1" kann man auch Vierecke machen
+                array[cols][rows] = "\u25A1";  //mit "\u25A1" kann man auch Vierecke machen
             }
         }
     }
@@ -104,15 +160,15 @@ public:
     //print the field
     void printField()
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < colsFix; i++)
         {
-            for (int j = 0; j < 6; j++)
+            for (int j = 0; j < rowsFix; j++)
             {
-                std::cout << array[i][j] << "  ";
+                cout << array[i][j] << "  ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
-        std::cout << "\n" << std::endl;
+        cout << "\n" << endl;
     }
     
 
@@ -125,8 +181,8 @@ public:
         {
             if(m_menu.getPlayer1() == 1)    //Wenn Mensch
             {
-                std::cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
-                std::cin >> m_column; 
+                cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
+                cin >> m_column; 
                 m_differPlayer = 0;         //boolean für Fallunterscheidung bei Spielstein
             }
         }      
@@ -134,13 +190,13 @@ public:
         {
             if(m_menu.getPlayer2() == 1)    //Wenn Mensch
             {
-                std::cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
-                std::cin >> m_column; 
+                cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
+                cin >> m_column; 
                 m_differPlayer = 1;         //boolean für Fallunterscheidung bei Spielstein
             }
         }          
             m_column--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
-            for(int i = 5; i>=0; i--)
+            for(int i = (colsFix +1); i>=0; i--)
             {
                 if(array[i][m_column] == "\u25A1")   //mit "\u25A1" kann man auch Vierecke machen
                 {
@@ -178,11 +234,14 @@ private:
     int m_feldbreite;
     int m_feldhoehe;
     Menu m_menu;                                        //Objekt von Menu muss hier bereitgestellt werden
-    std::string array[6][6];                            //wird später mit dem wirklichen Objekt initialisiert (m_menu ist hier Platzhalter)
+                                                        //wird später mit dem wirklichen Objekt initialisiert (m_menu ist hier Platzhalter)
+    string array[15][15];           //Maximal Feldgröße, solle aber variabel sein (Tatsächliche Feldgröße kleiner) -> Steine können außerhalb platziert werden                    
     int m_column;
     int static m_counter;
     int m_alteredNumber;                                //wechselt zwischen gerade und ungerade -> Spieler 1 und Spieler 2
     bool m_differPlayer;                                //für Fallunterscheidung nach Spielstein
+    int colsFix;
+    int rowsFix;
 };
 
 int Feld::m_counter = 0; //Wichtig für Initialisierung von static Memebervariable
