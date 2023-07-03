@@ -194,34 +194,35 @@ public:
                 cin >> m_col; 
                 m_differPlayer = 1;         //boolean für Fallunterscheidung bei Spielstein
             }
-        }          
-            m_col--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
+        }      
 
-            if(array[0][m_col] == m_menu.getSymbol1() || array[0][m_col] == m_menu.getSymbol2())    //maximale Feldhöhe erreicht?
-            {
-                cout << "Ungültige Eingabe, bitte erneut auswaehlen!\n" << endl;
-                    m_alteredNumber = alternatingPlayer();
-                    setSymbol1();   
-            }
+        m_col--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
 
-            else
+
+        if(array[0][m_col] == m_menu.getSymbol1() || array[0][m_col] == m_menu.getSymbol2())    //maximale Feldhöhe erreicht?
+        {
+            cout << "Ungültige Eingabe, bitte erneut auswaehlen!\n" << endl;
+            m_alteredNumber = alternatingPlayer();
+            setSymbol1();   
+        }
+        else
+        {
+            for(int i = (rowsFix +1); i>=0; i--)
             {
-                for(int i = (rowsFix +1); i>=0; i--)
+                if(array[i][m_col] == "\u2395")   //mit "\u25A1" kann man auch Vierecke machen
                 {
-                    if(array[i][m_col] == "\u2395")   //mit "\u25A1" kann man auch Vierecke machen
+                    if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
                     {
-                        if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
-                        {
-                            array[i][m_col] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
-                        }
-                        else                    //Fallunterscheidung Spieler 2
-                        {
-                            array[i][m_col] = m_menu.getSymbol2();   //mit \u0F1A = Kreis und mit \u0F1D = Kreuz aber sehr klein
-                        }
-                        break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
+                        array[i][m_col] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
                     }
+                    else                    //Fallunterscheidung Spieler 2
+                    {
+                        array[i][m_col] = m_menu.getSymbol2();   //mit \u0F1A = Kreis und mit \u0F1D = Kreuz aber sehr klein
+                    }
+                    break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
                 }
             }
+        }
     }
     
 
