@@ -31,11 +31,8 @@ int main() {
 
     bool run = true;
     bool win = false;
-    bool check_dol = false;
-    bool check_dul = false;
-    bool check_dor = false;
-    bool check_dur = false;
     int win_buffer = 0;
+    
     while(run){
         if(win) run = false;
         else {
@@ -50,7 +47,7 @@ int main() {
                             else if(x+dol > 5 || y-dol < 0) break;
                             else if(feld[x-dol][y+dol] != win_buffer) break;    // nach diagonal oben rechts suchen
                             else if(x-dol < 0 || y+dol > 5) break;
-                            else if(feld[x+dol][y+dol] != )
+                            else if(feld[x+dol][y+dol] != win_buffer) break;
                             else win = true;
                         }
 
