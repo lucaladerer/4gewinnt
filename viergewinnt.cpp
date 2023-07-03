@@ -44,7 +44,7 @@ public:
         cin >> m_symbol2;
         cout << endl;
 
-        cout << "Moechten Sie das Spiel auf der Standard-Feldgroesse (6x7) spielen? Falls ja, drücken Sie 'j', falls nein, drücken Sie 'n':\t";
+        cout << "Moechten Sie das Spiel auf der Standard-Feldgroesse (7x6) spielen? Falls ja, drücken Sie 'j', falls nein, drücken Sie 'n':\t";
         cin >> m_feldformat;
         cout << endl;
         if(m_feldformat == "j" || m_feldformat == "J")
@@ -77,7 +77,7 @@ public:
     //get Symbol1 from class Menu -> Gamemode -> vererbung an Feld
     string getSymbol1() const
     {
-        return m_symbol1;
+        return m_symbol1;   //\0F1A, \0F1D
     }
 
     string getSymbol2() const
@@ -137,22 +137,22 @@ public:
     {
         if(m_menu.getStandard() == true)
         {
-            colsFix = 7;    //warum funktioniert das nicht?
-            rowsFix = 6;
-            // array[colsFix][rowsFix];    //Feldgröße soll tatsächliche Größe betragen
+            rowsFix = 6;    
+            colsFix = 7;
+            // array[rowsFix][colsFix];    //Feldgröße soll tatsächliche Größe betragen
         }
         else if (m_menu.getStandard() == false)
         {
-            colsFix = m_menu.getFeldbreite();
             rowsFix = m_menu.getFeldhoehe();
-            // array[colsFix][rowsFix];    //Feldgröße soll tatsächliche Größe betragen
+            colsFix = m_menu.getFeldbreite();
+            // array[rowsFix][colsFix];    //Feldgröße soll tatsächliche Größe betragen
         }
 
-        for (int cols = 0; cols < colsFix; cols++)
+        for (int rows = 0; rows < rowsFix; rows++)
         {
-            for (int rows = 0; rows < rowsFix; rows++)
+            for (int cols = 0; cols < colsFix; cols++)
             {
-                array[cols][rows] = "\u25A1";  //mit "\u25A1" kann man auch Vierecke machen
+                array[rows][cols] = "\u2395";  //leeres Feld -> (\u25A1, \u2395, \u2588, \u2591/2/3, \25A2)     --> WICHTIG! Auch bei Setsymbol ändern
             }
         }
     }
@@ -160,9 +160,9 @@ public:
     //print the field
     void printField()
     {
-        for (int i = 0; i < colsFix; i++)
+        for (int i = 0; i < rowsFix; i++)
         {
-            for (int j = 0; j < rowsFix; j++)
+            for (int j = 0; j < colsFix; j++)
             {
                 cout << array[i][j] << "  ";
             }
@@ -182,7 +182,7 @@ public:
             if(m_menu.getPlayer1() == 1)    //Wenn Mensch
             {
                 cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
-                cin >> m_column; 
+                cin >> m_row; 
                 m_differPlayer = 0;         //boolean für Fallunterscheidung bei Spielstein
             }
         }      
@@ -191,22 +191,22 @@ public:
             if(m_menu.getPlayer2() == 1)    //Wenn Mensch
             {
                 cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
-                cin >> m_column; 
+                cin >> m_row; 
                 m_differPlayer = 1;         //boolean für Fallunterscheidung bei Spielstein
             }
         }          
-            m_column--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
-            for(int i = (colsFix +1); i>=0; i--)
+            m_row--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
+            for(int i = (rowsFix +1); i>=0; i--)
             {
-                if(array[i][m_column] == "\u25A1")   //mit "\u25A1" kann man auch Vierecke machen
+                if(array[i][m_row] == "\u2395")   //mit "\u25A1" kann man auch Vierecke machen
                 {
                     if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
                     {
-                        array[i][m_column] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
+                        array[i][m_row] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
                     }
                     else                    //Fallunterscheidung Spieler 2
                     {
-                        array[i][m_column] = m_menu.getSymbol2(); 
+                        array[i][m_row] = m_menu.getSymbol2();   //mit \u0F1A = Kreis und mit \u0F1D = Kreuz aber sehr klein
                     }
                     break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
                 }
@@ -236,12 +236,12 @@ private:
     Menu m_menu;                                        //Objekt von Menu muss hier bereitgestellt werden
                                                         //wird später mit dem wirklichen Objekt initialisiert (m_menu ist hier Platzhalter)
     string array[15][15];           //Maximal Feldgröße, solle aber variabel sein (Tatsächliche Feldgröße kleiner) -> Steine können außerhalb platziert werden                    
-    int m_column;
+    int m_row;
     int static m_counter;
     int m_alteredNumber;                                //wechselt zwischen gerade und ungerade -> Spieler 1 und Spieler 2
     bool m_differPlayer;                                //für Fallunterscheidung nach Spielstein
-    int colsFix;
     int rowsFix;
+    int colsFix;
 };
 
 int Feld::m_counter = 0; //Wichtig für Initialisierung von static Memebervariable
