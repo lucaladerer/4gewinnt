@@ -182,7 +182,7 @@ public:
             if(m_menu.getPlayer1() == 1)    //Wenn Mensch
             {
                 cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
-                cin >> m_row; 
+                cin >> m_col; 
                 m_differPlayer = 0;         //boolean für Fallunterscheidung bei Spielstein
             }
         }      
@@ -191,27 +191,39 @@ public:
             if(m_menu.getPlayer2() == 1)    //Wenn Mensch
             {
                 cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
-                cin >> m_row; 
+                cin >> m_col; 
                 m_differPlayer = 1;         //boolean für Fallunterscheidung bei Spielstein
             }
         }          
-            m_row--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
-            for(int i = (rowsFix +1); i>=0; i--)
+            m_col--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
+
+            if(array[0][m_col] == m_menu.getSymbol1() || array[0][m_col] == m_menu.getSymbol2())    //maximale Feldhöhe erreicht?
             {
-                if(array[i][m_row] == "\u2395")   //mit "\u25A1" kann man auch Vierecke machen
+                cout << "Ungültige Eingabe, bitte erneut auswaehlen!\n" << endl;
+                    m_alteredNumber = alternatingPlayer();
+                    setSymbol1();   
+            }
+
+            else
+            {
+                for(int i = (rowsFix +1); i>=0; i--)
                 {
-                    if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
+                    if(array[i][m_col] == "\u2395")   //mit "\u25A1" kann man auch Vierecke machen
                     {
-                        array[i][m_row] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
+                        if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
+                        {
+                            array[i][m_col] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
+                        }
+                        else                    //Fallunterscheidung Spieler 2
+                        {
+                            array[i][m_col] = m_menu.getSymbol2();   //mit \u0F1A = Kreis und mit \u0F1D = Kreuz aber sehr klein
+                        }
+                        break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
                     }
-                    else                    //Fallunterscheidung Spieler 2
-                    {
-                        array[i][m_row] = m_menu.getSymbol2();   //mit \u0F1A = Kreis und mit \u0F1D = Kreuz aber sehr klein
-                    }
-                    break;                                  //Funktion innerhalb der Klasse Menu zugegriffen
                 }
             }
     }
+    
 
     //set Symbol2 at chosen column      EHER Unnötig!
     void setSymbol2(int y)         
@@ -236,7 +248,7 @@ private:
     Menu m_menu;                                        //Objekt von Menu muss hier bereitgestellt werden
                                                         //wird später mit dem wirklichen Objekt initialisiert (m_menu ist hier Platzhalter)
     string array[15][15];           //Maximal Feldgröße, solle aber variabel sein (Tatsächliche Feldgröße kleiner) -> Steine können außerhalb platziert werden                    
-    int m_row;
+    int m_col;
     int static m_counter;
     int m_alteredNumber;                                //wechselt zwischen gerade und ungerade -> Spieler 1 und Spieler 2
     bool m_differPlayer;                                //für Fallunterscheidung nach Spielstein
@@ -256,7 +268,7 @@ int main()
     // feld.printField();
     // feld.setSymbol1();
     // feld.printField();
-    for(int v = 0; v<=6; v++)           //Gewinnbedingungen -> Schleife beendet wenn 4 in einer Reihe
+    for(int v = 0; v<=8; v++)           //Gewinnbedingungen -> Schleife beendet wenn 4 in einer Reihe
     {
         feld.setSymbol1();
         feld.printField();
