@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <random>
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -179,24 +181,209 @@ public:
         //if Mensch dann abfragen
         if(m_alteredNumber % 2 == 0)  //Spieler 2
         {
-            if(m_menu.getPlayer1() == 1)    //Wenn Mensch
+            switch (m_menu.getPlayer2())
             {
-                cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
-                cin >> m_col; 
-                m_differPlayer = 0;         //boolean für Fallunterscheidung bei Spielstein
+                case 1:     //Mensch
+                    cout << "Spieler 2, waehlen Sie nun eine Spalte aus:\t";
+                    cin >> m_col;   
+
+                    if(m_differPlayer == true)  //boolean für Fallunterscheidung bei Spielstein
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                case 2:     //vertikaler Bot
+                    m_col = 0;          //links anfangen
+                    for(int i = 0; i <=colsFix; i++)      
+                    {
+                        if(array[0][m_col] == m_menu.getSymbol1() || array[0][m_col] == m_menu.getSymbol2())    
+                        {
+                            m_col++;
+                        }
+                        else
+                        break;
+                    }
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                case 3:     //horizontaler Bot
+                    m_col = 0;              //Keine Ahnung wie weiter
+                    int static counterHoBot1 = 0;
+                    for(int c = 0; c <= colsFix; c++)
+                    {
+                        for(int i = (rowsFix+1); i >= 0; i--)      
+                        {
+                            if(array[i][m_col] == "\u2395")
+                            {
+                                counterHoBot1++;
+                                break;
+                            }
+                            else
+                            {
+                            }
+                        }
+                        
+                    }
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                case 4:     //Random Bot
+                    std::random_device randomBot;
+                    std::mt19937 generator(randomBot());
+                    std::uniform_int_distribution<int> distribution(0, colsFix);
+                    m_col = distribution(randomBot);
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                // case 5:     //Schlauer Bot
+
+                //     if(m_differPlayer == true)
+                //     {
+                //         m_differPlayer = false;
+                //     }
+                //     else
+                //     {
+                //         m_differPlayer = true;
+                //     }
+                //     break;
             }
         }      
+        
         else if(m_alteredNumber % 2 != 0)    //Spieler 1
         {
-            if(m_menu.getPlayer2() == 1)    //Wenn Mensch
+            switch (m_menu.getPlayer1())
             {
-                cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
-                cin >> m_col; 
-                m_differPlayer = 1;         //boolean für Fallunterscheidung bei Spielstein
+                case 1:     //Mensch
+                    cout << "Spieler 1, waehlen Sie nun eine Spalte aus:\t";
+                    cin >> m_col;   
+                    human = true;
+                    if(m_differPlayer == true)  //boolean für Fallunterscheidung bei Spielstein
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                case 2:     //vertikaler Bot
+                    m_col = 0;          //links anfangen
+                    for(int i = 0; i <=colsFix; i++)      
+                    {
+                        if(array[0][m_col] == m_menu.getSymbol1() || array[0][m_col] == m_menu.getSymbol2())    
+                        {
+                            m_col++;
+                        }
+                        else
+                        break;
+                    }
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                case 3:     //horizontaler Bot
+                    m_col = 0;              //Keine Ahnung wie weiter
+                    int static counterHoBot1 = 0;
+                    for(int c = 0; c <= colsFix; c++)
+                    {
+                        for(int i = (rowsFix+1); i >= 0; i--)      
+                        {
+                            if(array[i][m_col] == "\u2395")
+                            {
+                                counterHoBot1++;
+                                break;
+                            }
+                            else
+                            {
+                            }
+                        }
+                        
+                    }
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                case 4:     //Random Bot
+                    std::random_device randomBot;
+                    std::mt19937 generator(randomBot());
+                    std::uniform_int_distribution<int> distribution(1, (colsFix+1));
+                    m_col = distribution(randomBot);
+                    if(m_differPlayer == true)
+                    {
+                        m_differPlayer = false;
+                    }
+                    else
+                    {
+                        m_differPlayer = true;
+                    }
+                    break;
+
+                // case 5:     //Schlauer Bot
+
+                //     if(m_differPlayer == true)
+                //     {
+                //         m_differPlayer = false;
+                //     }
+                //     else
+                //     {
+                //         m_differPlayer = true;
+                //     }
+                //     break;
             }
         }      
 
-        m_col--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
+        if(human)
+        {
+            m_col--;                     //arrays fangen bei 0 an -> Mensch fängt bei 1 an zu zählen
+        }
 
 
         if(array[0][m_col] == m_menu.getSymbol1() || array[0][m_col] == m_menu.getSymbol2())    //maximale Feldhöhe erreicht?
@@ -214,6 +401,7 @@ public:
                     if(m_differPlayer == 1) //Fallunterscheidung Spieler 1
                     {
                         array[i][m_col] = m_menu.getSymbol1();      //Über das Objekt der Klasse Menu wird auf die
+                        checkWin(i, m_col);
                     }
                     else                    //Fallunterscheidung Spieler 2
                     {
@@ -226,20 +414,23 @@ public:
     }
     
 
-    //set Symbol2 at chosen column      EHER Unnötig!
-    void setSymbol2(int y)         
-    {                       
-        y--;
-        for(int i = 5; i>=0; i--)
+    bool checkWin(int row, int column)
+    {
+        //horizontal
+        if(array[row][column] == array[row][column + 1])
         {
-            if(array[i][y] == "0")
-            {
-                array[i][y] = m_menu.getSymbol2();
-                break;
-            }
+            
         }
-        alternatingPlayer();
+        //vertical
+
+        //diagonal
     }
+
+    bool checkWinner()
+    {
+
+    }
+
 
     virtual ~Feld(){};
 
@@ -255,6 +446,7 @@ private:
     bool m_differPlayer;                                //für Fallunterscheidung nach Spielstein
     int rowsFix;
     int colsFix;
+    bool human;
 };
 
 int Feld::m_counter = 0; //Wichtig für Initialisierung von static Memebervariable
@@ -269,10 +461,16 @@ int main()
     // feld.printField();
     // feld.setSymbol1();
     // feld.printField();
-    for(int v = 0; v<=8; v++)           //Gewinnbedingungen -> Schleife beendet wenn 4 in einer Reihe
+    // while(feld.checkWin() == false)           //Gewinnbedingungen -> Schleife beendet wenn 4 in einer Reihe
+    // {
+    //     feld.setSymbol1();
+    //     feld.printField();
+    // }
+    for(int v = 0; v<= 15; v++)
     {
         feld.setSymbol1();
         feld.printField();
     }
+
     return 0;
 }
