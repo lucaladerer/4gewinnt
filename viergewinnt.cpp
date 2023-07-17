@@ -33,26 +33,26 @@ public:
         cout << "(3) -> Hoizontaler Bot\n(4) -> Zufallsbot\n(5) -> Schlauer Bot\n" << endl;
 
         //Player1
-        cout << "Bitte wählen Sie nun Spieler 1 und dessen Symbol aus:\nSpielmodus:\t\t";  
+        cout << "Bitte waehlen Sie nun Spieler 1 und dessen Symbol aus:\nSpielmodus:\t\t";  
         cin >> m_spieler1;
         cout << "Spielstein/Symbol:\t";
         cin >> m_symbol1 ;
         cout << endl;
 
         //Player2
-        cout << "Bitte wählen Sie nun Spieler 2 und dessen Symbol aus:\nSpielmodus:\t\t";
+        cout << "Bitte waehlen Sie nun Spieler 2 und dessen Symbol aus:\nSpielmodus:\t\t";
         cin >> m_spieler2;
         cout << "Spielstein/Symbol:\t";
         cin >> m_symbol2;
         cout << endl;
 
-        cout << "Moechten Sie das Spiel auf der Standard-Feldgroesse (7x6) spielen? Falls ja, drücken Sie 'j', falls nein, drücken Sie 'n':\t";
+        cout << "Moechten Sie das Spiel auf der Standard-Feldgroesse (7x6) spielen? Falls ja, druecken Sie 'j', falls nein, druecken Sie 'n':\t";
         cin >> m_feldformat;
         cout << endl;
         if(m_feldformat == "j" || m_feldformat == "J")
         {
         	standard = true;
-            cout << "Sie haben sich für die Standard-Feldgroesse entschieden!" << endl;
+            cout << "Sie haben sich fuer die Standard-Feldgroesse entschieden!" << endl;
         }
         else if(m_feldformat == "n" || m_feldformat == "N")
         {
