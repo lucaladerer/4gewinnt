@@ -1,14 +1,2 @@
-# 4gewinnt
- Übungsprojekt Kevin und Luca
-
-# halo
-
-## cool
-
-### test
-
-#### noch ein test
-##### f
-
-# info
-.md = Markdown
+# Vier Gewinnt Projekt
+Dieses Projekt wurde im Rahmen der C++-Vorlesung an der DHBW Stuttgart erstellt. 
